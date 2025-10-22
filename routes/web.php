@@ -1,35 +1,26 @@
 <?php
 
-use App\Livewire\Settings\Appearance;
-use App\Livewire\Settings\Password;
-use App\Livewire\Settings\Profile;
-use App\Livewire\Settings\TwoFactor;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
+use App\Livewire\DashboardSeguimientos;
+use App\Livewire\Hospital\AltaPaciente;
+use App\Livewire\Hospital\CrearSolicitud;
 
-Route::get('/', function () {
+Route::get('/', function(){
     return view('welcome');
-})->name('home');
+});
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+//rutas protegidas que requiere login
+route::middleware(['auth'])->group(function(){
+    //DASHBOARD PRINCIPAL AMBOS ROLES PUEDEN VER
+    Route::get('dashboard', DashboardSeguimientos::class)
+        ->name('dasboard');
+    
+    //RUTAS SOLO PARA HOSPITAL
+    Route::middleware(['role:Hospital'])->group(function(){
+        Route::get('/pacientes/nuevo', AltaPaciente::class)
+            ->name('hospital.pacientes.crear');
 
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
-
-    Route::get('settings/profile', Profile::class)->name('profile.edit');
-    Route::get('settings/password', Password::class)->name('user-password.edit');
-    Route::get('settings/appearance', Appearance::class)->name('appearance.edit');
-
-    Route::get('settings/two-factor', TwoFactor::class)
-        ->middleware(
-            when(
-                Features::canManageTwoFactorAuthentication()
-                    && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
-                ['password.confirm'],
-                [],
-            ),
-        )
-        ->name('two-factor.show');
+        Route::get('/solicitudes/nueva', CrearSolicitud::class)
+            ->name('hospital.solicitudes.crear');
+    });
 });
