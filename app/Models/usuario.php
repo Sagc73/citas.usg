@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable as NotificationsNotifiable;
-use Iluminate\Notifications\Notifiable;
+use App\Models\rol;
 use Iluminate\Foundation\Auth\User;
 
 class usuario extends Authenticatable
 {
   use HasFactory;
-  use NotificationsNotifiable;
 
   protected $primaryKey = 'usuarioId';
   protected $fillable = [

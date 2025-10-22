@@ -7,13 +7,13 @@ use App\Livewire\Hospital\CrearSolicitud;
 
 Route::get('/', function(){
     return view('welcome');
-});
+})->name('home');
 
 //rutas protegidas que requiere login
 route::middleware(['auth'])->group(function(){
     //DASHBOARD PRINCIPAL AMBOS ROLES PUEDEN VER
-    Route::get('dashboard', DashboardSeguimientos::class)
-        ->name('dasboard');
+    Route::get('/dashboard', DashboardSeguimientos::class)
+        ->name('dashboard');
     
     //RUTAS SOLO PARA HOSPITAL
     Route::middleware(['role:Hospital'])->group(function(){

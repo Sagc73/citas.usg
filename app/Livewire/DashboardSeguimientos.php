@@ -14,41 +14,43 @@ class DashboardSeguimientos extends Component
     public $busquedaPaciente = '';
 
     //variables para los modales
-    public $showinAgendaModal = false;
-    public $showinReporteModal = false;
+    public $showingAgendaModal = false;
+    public $showingReporteModal = false;
     public $selectedSeguimientoId = null;
 
     public function render()
     {
-        $query = seguimientosUsg::with('paciente','estado','usuarioHospital','usuarioUsg')
-            ->when($this->filtroEstado, function($q){
+        $query = seguimientosUsg::with('paciente', 'estado', 'usuarioHospital', 'usuarioUsg')
+            ->when($this->filtroEstado, function ($q) {
                 $q->where('EstadoProcesoId', $this->filtroEstado);
             })
-            ->when($this->busquedaPaciente, function($q){
-                $q->whereHas('paciente', function($subq){
-                    $subq->where('nombrePaciente', 'like','%' . $this->busquedaPaciente . '%');
+            ->when($this->busquedaPaciente, function ($q) {
+                $q->whereHas('paciente', function ($subq) {
+                    $subq->where('nombrePaciente', 'like', '%' . $this->busquedaPaciente . '%');
                 });
             })
-            ->orderBy('fechaAlta','desc');
+            ->orderBy('fechaAlta', 'desc');
 
-            //para la paginacion de livewire
-            $seguimientos = $query->paginate(10);
+        //para la paginacion de livewire
+        $seguimientos = $query->paginate(10);
 
-            return view('livewire.dasboard-seguimietos',[
-                'seguimientos'=>$seguimientos,
-                'estados'=> \App\Models\EstadoProceso::all(), //para el filtro
-            ]);
+       return view('livewire.dashboard-seguimientos', [
+            'seguimientos' => $seguimientos,
+            'estados' => \App\Models\EstadoProceso::all(), // Para el filtro
+        ]);
     }
 
     //ACCIONES PARA LOS BOTONES DE LA TABLA
-    public function openAgendaModal($seguimientosId){
+    public function openAgendaModal($seguimientosId)
+    {
         $this->selectedSeguimientoId = $seguimientosId;
-        $this->showinAgendaModal = true;
+        $this->showingAgendaModal = true;
     }
 
-    public function openReporteModal($seguimientosId){
+    public function openReporteModal($seguimientosId)
+    {
         $this->selectedSeguimientoId = $seguimientosId;
-        $this->showinReporteModal = true;
+        $this->showingReporteModal = true;
     }
 
     //ESCUCHA EVENTOS DE LOS MODALES
@@ -57,9 +59,10 @@ class DashboardSeguimientos extends Component
         'reporteSubido' => 'closeModals'
     ];
 
-    public function closeModals(){
-        $this->showinAgendaModal = false;
-        $this->showinReporteModal = false;
+    public function closeModals()
+    {
+        $this->showingAgendaModal = false;
+        $this->showingReporteModal = false;
         $this->selectedSeguimientoId = null;
         $this->render();
     }

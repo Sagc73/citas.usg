@@ -22,30 +22,35 @@ class seguimientosUsg extends Model
 
     // DEFINIENDO LOS TIPOS DE DATOS PARA LAS FECHAS
     protected $casts = [
-        'fechaAlta' => 'datatime',
-        'fechaSeguimiento' => 'datatime'
+        'fechaAlta' => 'datetime',
+        'fechaSeguimiento' => 'datetime'
     ];
 
     public $timestamps = false;
 
     //relacion el seguimiento pertenece a un paciente
-    public function paciente(){
+    public function paciente()
+    {
         return $this->belongsTo(paciente::class, 'PacienteId');
     }
     //relacion el seguimiento tiene un estado
-    public function estado(){
-        return $this->belongsTo(EstadoProceso::class,'EstadoProcesoId');
+    public function estado()
+    {
+        return $this->belongsTo(EstadoProceso::class, 'EstadoProcesoId');
     }
     //relacion el seguimiento fue solicitado por un usuario(HOSPITAL)
-    public function usuarioHospital(){
+    public function usuarioHospital()
+    {
         return $this->belongsTo(usuario::class, 'UsuarioHospital');
     }
     //relacion el seguimiento es atendido por un usuario(USG)
-    public function usuarioUsg(){
+    public function usuarioUsg()
+    {
         return $this->belongsTo(usuario::class, 'UsuarioUsg');
     }
     //relacion el seguimiento puede tener muchos archivos adjuntos
-    public function archivos(){
-        return $this->hasMany(ArchivoAdjunto::class,'SeguimientoId');
+    public function archivos()
+    {
+        return $this->hasMany(ArchivoAdjunto::class, 'SeguimientoId');
     }
 }
